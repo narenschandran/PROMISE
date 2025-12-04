@@ -8,12 +8,16 @@ DATA_DIR="${PROJROOT}/data"
 PREREQ_DIR="${PROJROOT}/prereq"
 TMP_DIR="${PROJROOT}/tmp"
 
-BIN_DIR="${PROJROOT}/bin"
+CANON_PROTEOME_FA="${PREREQ_DIR}/human-proteome-canonical.fa.gz"
 
-CDHIT="${BIN_DIR}/cd-hit-v4.8.1-2019-0228/cd-hit"
-if [ ! -x "$CDHIT" ]; then
-    CDHIT='cdhit'
-fi
+BIN_DIR="${PROJROOT}/bin"
+TOOLS_DIR="${PROJROOT}/tools"
+
+TINYHLANET_DIR="${BIN_DIR}/TinyHLAnet"
+PSCAN="${TINYHLANET_DIR}/tinyhlanet-scan"
+
+MINP_F="${PREREQ_DIR}/model-inputs.tar.gz"
+MINP_DIR="${DATA_DIR}/model-inputs"
 
 # Useful functions:
 #
