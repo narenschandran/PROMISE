@@ -182,8 +182,91 @@ for (qn in qns) {
 
 library(Boruta)
 
-sdf2 <- score_df[,c(3, 5:17)]
-bsdf2 <- Boruta(pred ~ ., sdf2)
+sdf3 <- local({
+    ind <- match(score_df$gene, seq_df$gene)
+    tmp <- seq_df[ind,]
+    tmp1 <- cbind.data.frame(score_df, tmp[,3:10])
+    tmp1[,colnames(tmp1) != "Plastid"]
+})
+
+
+
+
+subcloc_lfc <- sapply(setdiff(subclocs, "Plastid"), function(cname) {
+    datf <- sdf3[,c("pred", cname, "quartile")]
+    sp   <- split(datf[[cname]], datf$quartile)
+    md   <- sapply(sp, median)
+    q4   <- md[["Q4"]]
+    q1   <- md[["Q1"]]
+    round(log2(q4/q1), 3)
+})
+
+{
+subcloc_lfc_mat <- t(as.matrix(subcloc_lfc))
+subcloc_lfc_mat_ncol <- matrix("black",
+                               nrow = nrow(subcloc_lfc_mat),
+                               ncol = ncol(subcloc_lfc_mat))
+subcloc_lfc_mat_ncol[abs(subcloc_lfc_mat) > 0.4] <- "white"
+svg(file.path(PLOTS_DIR, 'seq-dissection-deeploc-q4q1-lfc.svg'))
+br  <- seq(-0.5, 0.5, 0.1)
+cls <- rev(hcl.colors(length(br) - 1, palette = "RdBu"))
+pheatmap(
+    subcloc_lfc_mat,
+    breaks = br,
+    color  = cls,
+    cluster_rows = F,
+    cluster_cols = F,
+    display_numbers = T,
+    border_color = "black",
+    cellwidth    = 30,
+    cellheight   = 30,
+    angle_col    = 45,
+    legend = F,
+    fontsize_number = 12,
+    fontsize = 15,
+    number_color = subcloc_lfc_mat_ncol
+)
+dev.off()
+}
+
+prop_lfc <- sapply(setdiff(colnames(seq_df), c("gene", "pred", "quartile")), function(cname) {
+    datf <- sdf3[,c("pred", cname, "quartile")]
+    sp   <- split(datf[[cname]], datf$quartile)
+    md   <- sapply(sp, median)
+    q4   <- md[["Q4"]]
+    q1   <- md[["Q1"]]
+    round(log2(q4/q1), 3)
+})
+
+{
+prop_lfc_mat <- t(as.matrix(prop_lfc))
+prop_lfc_mat_ncol <- matrix("black",
+                               nrow = nrow(prop_lfc_mat),
+                               ncol = ncol(prop_lfc_mat))
+prop_lfc_mat_ncol[abs(prop_lfc_mat) > 0.4] <- "white"
+svg(file.path(PLOTS_DIR, 'seq-dissection-protparam-q4q1-lfc.svg'))
+br  <- seq(-0.5, 0.5, 0.1)
+cls <- rev(hcl.colors(length(br) - 1, palette = "RdBu"))
+pheatmap(
+    prop_lfc_mat,
+    breaks = br,
+    color  = cls,
+    cluster_rows = F,
+    cluster_cols = F,
+    display_numbers = T,
+    border_color = "black",
+    cellwidth    = 30,
+    cellheight   = 30,
+    angle_col    = 45,
+    legend = F,
+    fontsize_number = 12,
+    fontsize = 15,
+    number_color = prop_lfc_mat_ncol
+)
+dev.off()
+}
+
+
 # gset_dir <- file.path(mdissect_d, 'genesets')
 # if (!dir.exists(gset_dir)) dir.create(gset_dir, recursive = T)
 # 
