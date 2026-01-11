@@ -62,7 +62,7 @@ The predictions from this run will be placed in the same input folder. The two m
 This repository contains the code and data required to train and benchmark the `P-model` and also for executing the full RImPep pipeline. The files/directories that come with this repository include:
 
 ```
-TinyHLAnet
+RImPep
 |
 |-bin              : Contains wrapper scripts used during model benchmarking
 |-promiselib       : Python library that contains the code used to built P-model
